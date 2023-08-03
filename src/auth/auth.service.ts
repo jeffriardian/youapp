@@ -48,8 +48,15 @@ export class AuthService {
   async signIn(data: AuthDto) {
     // Check if user exists
     var tokens;
-    const user = await this.usersService.findByUsername(data.username);
-    const email = await this.usersService.findByEmail(data.email)
+    
+    if (!data.email)
+      var user = await this.usersService.findByUsername(data.username);
+
+    if (!data.username)
+      var email = await this.usersService.findByEmail(data.email)
+
+    if (data.email && data.username)
+      var user = await this.usersService.findByUsername(data.username);
 
     if (!user && !email) throw new BadRequestException('User or Email does not exist');
 
