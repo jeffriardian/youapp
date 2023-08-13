@@ -40,8 +40,23 @@ export class UsersService {
   }
 
   async update( id: string, updateUserDto: UpdateUserDto ): Promise<UserDocument> {
+    // Generating google sheet client
+    const googleSheetClient = await this.getGoogleSheetClient();
+
+    // Reading Google Sheet from a specific range
+    const data = await this.readGoogleSheet(googleSheetClient, sheetId, tabName, range);
+    var bod = new Date("November 07");
+    const result = data.find(({ dateRange1, dateRange2 }) => {
+      const start = new Date(dateRange1);
+      const end = new Date(dateRange2);
+      return start <= bod && end > bod;
+    });
+    /*console.log(result);
+    console.log(result.horoscopes);
+    console.log(result.zodiacs);*/
+    
     return this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .findByIdAndUpdate(id, {...updateUserDto}, { new: true })
       .exec();
   }
 
@@ -58,21 +73,6 @@ export class UsersService {
   }
 
   async findAll(): Promise<UserDocument[]> {
-    // Generating google sheet client
-    const googleSheetClient = await this.getGoogleSheetClient();
-
-    // Reading Google Sheet from a specific range
-    const data = await this.readGoogleSheet(googleSheetClient, sheetId, tabName, range);
-    var bod = new Date("June 28");
-    const result = data.find(({ dateRange1, dateRange2 }) => {
-      const start = new Date(dateRange1);
-      const end = new Date(dateRange2);
-      return start <= bod && end > bod;
-    });
-    console.log(result);
-    console.log(result.horoscopes);
-    console.log(result.zodiacs);
-    
     return this.userModel.find().exec();
   }
 

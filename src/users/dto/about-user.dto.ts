@@ -14,11 +14,9 @@ export class AboutUserDto{
     birthday: string;
 
     @IsString()
-    @IsNotEmpty()
     horoscope: string;
     
     @IsString()
-    @IsNotEmpty()
     zodiac: string;
 
     @IsNumber()
