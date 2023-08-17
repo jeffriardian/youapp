@@ -40,6 +40,15 @@ export class UsersService {
   }
 
   async update( id: string, updateUserDto: UpdateUserDto ): Promise<UserDocument> {
+    // Check if user exists
+    const userExists = await this.findById(
+      id,
+    );
+
+    if (!userExists) {
+      throw new BadRequestException("User doesn't exists");
+    }
+
     // Generating google sheet client
     const googleSheetClient = await this.getGoogleSheetClient();
 
